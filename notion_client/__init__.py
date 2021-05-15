@@ -1,2 +1,2 @@
-from .client import AsyncClient, Client
+from .client import Client
 from .errors import APIErrorCode, APIResponseError

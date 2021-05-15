@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Sequence
+
+import httpx
 
 from .helpers import pick
 
@@ -7,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class Endpoint:
-    def __init__(self, parent: "Client"):
+    def __init__(self, parent: Client):
         self.parent = parent
 
 
@@ -34,25 +36,40 @@ class BlocksEndpoint(Endpoint):
 
 
 class DatabasesEndpoint(Endpoint):
-    def list(self, **kwargs):
-        return self.parent.request(
-            path="databases",
+    def list(
+        self,
+        start_cursor: Optional[str] = None,
+        page_size: Optional[int] = None,
+    ) -> httpx.Request:
+        return self.parent.client.build_request(
             method="GET",
-            query=pick(kwargs, "start_cursor", "page_size"),
+            url="databases",
+            params={"start_cursor": start_cursor, "page_size": page_size},
         )
 
-    def query(self, database_id, **kwargs):
-        return self.parent.request(
-            path=f"databases/{database_id}/query",
+    def query(
+        self,
+        database_id: str,
+        sorts: Optional[dict] = None,
+        filter: Optional[Sequence] = None,
+        start_cursor: Optional[str] = None,
+        page_size: Optional[int] = None,
+    ) -> httpx.Request:
+        return self.parent.client.build_request(
             method="POST",
-            body=pick(kwargs, "filter", "sorts", "start_cursor", "page_size"),
-            auth=kwargs.get("auth"),
+            url=f"databases/{database_id}/query",
+            json={
+                "start_cursor": start_cursor,
+                "page_size": page_size,
+                "sorts": sorts,
+                "filter": filter,
+            },
         )
 
-    def retrieve(self, database_id, **kwargs):
-        return self.parent.request(
-            path=f"databases/{database_id}",
+    def retrieve(self, database_id: str):
+        return self.parent.client.build_request(
             method="GET",
+            url=f"databases/{database_id}",
         )
 
 
@@ -72,7 +89,9 @@ class PagesEndpoint(Endpoint):
 
     def update(self, page_id, **kwargs):
         return self.parent.request(
-            path=f"pages/{page_id}", method="PATCH", body=pick(kwargs, "properties")
+            path=f"pages/{page_id}",
+            method="PATCH",
+            body=pick(kwargs, "properties"),
         )
 
 
