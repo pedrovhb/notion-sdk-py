@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-from .helpers import pick
+from notion_client.helpers import pick
 
 if TYPE_CHECKING:
-    from .client import Client
+    from notion_client.client import Client
 
 
 class Endpoint:

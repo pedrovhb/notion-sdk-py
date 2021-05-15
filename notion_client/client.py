@@ -4,14 +4,14 @@ from typing import Dict, Union
 
 import httpx
 
-from .api_endpoints import (
+from notion_client.api_endpoints import (
     BlocksEndpoint,
     DatabasesEndpoint,
     PagesEndpoint,
     UsersEndpoint,
 )
-from .helpers import pick
-from .logging import make_console_logger
+from notion_client.helpers import pick
+from notion_client.logging import make_console_logger
 
 
 @dataclass
