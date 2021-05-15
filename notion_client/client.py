@@ -78,9 +78,9 @@ class BaseClient(abc.ABC):
 
     def _build_request_databases_list(
         self,
-        start_cursor: Optional[int] = None,
+        start_cursor: Optional[str] = None,
     ) -> httpx.Request:
-        params = {"page_size": self.page_size}
+        params: Dict[str, Any] = {"page_size": self.page_size}
         if start_cursor:
             params["start_cursor"] = start_cursor
         return self._http_client.build_request(
@@ -137,7 +137,7 @@ class Client(BaseClient):
         assert isinstance(data, dict)
         return data
 
-    def list_databases(self, start_cursor: Optional[int] = None) -> dict:
+    def list_databases(self, start_cursor: Optional[str] = None) -> dict:
         # todo - think of returning manager object with
         #  auto pagination instead of dict
         request = self._build_request_databases_list(start_cursor=start_cursor)
