@@ -5,11 +5,11 @@ import httpx
 from .helpers import pick
 
 if TYPE_CHECKING:
-    from .client import Client
+    from .http_client import HttpClient
 
 
 class Endpoint:
-    def __init__(self, parent: Client):
+    def __init__(self, parent: HttpClient):
         self.parent = parent
 
 
